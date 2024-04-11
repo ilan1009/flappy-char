@@ -56,22 +56,46 @@ public class Main {
         inputThread.start();
     }
 
+    private static void die(int height){
+        String deathScreen = """
+                M""MMMM""M MMP""\"""YMM M""MMMMM""M    M""\"""\"'YMM M""M MM""\"""\"""`M M""\"""\"'YMM\s
+                M. `MM' .M M' .mmm. `M M  MMMMM  M    M  mmmm. `M M  M MM  mmmmmmmM M  mmmm. `M\s
+                MM.    .MM M  MMMMM  M M  MMMMM  M    M  MMMMM  M M  M M`      MMMM M  MMMMM  M\s
+                MMMb  dMMM M  MMMMM  M M  MMMMM  M    M  MMMMM  M M  M MM  MMMMMMMM M  MMMMM  M\s
+                MMMM  MMMM M. `MMM' .M M  `MMM'  M    M  MMMM' .M M  M MM  MMMMMMMM M  MMMM' .M\s
+                MMMM  MMMM MMb     dMM Mb       dM    M       .MM M  M MM        .M M       .MM\s
+                MMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM    MMMMMMMMMMM MMMM MMMMMMMMMMMM MMMMMMMMMMM\s
+                """;
+        System.out.print(deathScreen);
+
+    }
+
     public static void mainLoop(NonBlockingReader reader) throws IOException, InterruptedException {
         double diff = INITIAL_DIFFICULTY;
-        System.out.println("SCORE: " + 0 + " DIFF: " + diff + " PRESS TO START");
         String gridString = gridController.getGridString();
+        clearScreen();
+        System.out.println("SCORE: " + "0" + " DIFF: " + diff);
         System.out.print(gridString);
+
+        int[] res = gridController.update(diff);
 
         reader.read(); //wait for key input.
         gridController.bird.jump();
 
+
+
         while (!gameOver) {
             diff += 0.0025;
             gridString = gridController.getGridString();
-            int[] res = gridController.update(diff);
+            res = gridController.update(diff);
             if (res[1] == -1) {
+                TimeUnit.MILLISECONDS.sleep(500);
                 System.out.println(" R I P ");
+                clearScreen();
+                die(gridString.length());
+                TimeUnit.SECONDS.sleep(5);
                 gameOver = true;
+
             }
             clearScreen();
             System.out.println("SCORE: " + res[0] + " DIFF: " + diff);
